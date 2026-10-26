@@ -1,0 +1,5 @@
+cliente,telefono,email,fecha,hora,servicio,estado,recordatorio_enviado
+Ana Ruiz,+5493415550201,ana@ejemplo.com,2026-10-27,10:00,Consulta,confirmado,
+Pedro Sosa,+5493415550202,pedro@ejemplo.com,2026-10-27,11:30,Control,pendiente,
+Julieta Paz,+5493415550203,julieta@ejemplo.com,2026-10-28,16:00,Limpieza,confirmado,
+Martín Díaz,+5493415550204,,2026-10-29,09:00,Consulta,cancelado,

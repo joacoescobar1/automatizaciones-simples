@@ -1,0 +1,19 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo – Formulario de contacto → Planilla</title>
+<style>body{font-family:system-ui;max-width:480px;margin:40px auto;padding:0 16px}input,textarea,button{width:100%;padding:10px;margin:6px 0;box-sizing:border-box}button{background:#25d366;border:0;color:#fff;font-weight:bold;cursor:pointer}table{width:100%;font-size:13px;border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px}</style></head>
+<body><p style="margin:0 0 12px"><a href="../../index.html" style="color:#0f766e;text-decoration:none;font-size:14px">← Volver al portfolio</a></p><h2>Dejanos tu consulta</h2>
+<form id="f"><input name="nombre" placeholder="Nombre" required><input name="telefono" placeholder="Teléfono (WhatsApp)" required><textarea name="mensaje" placeholder="Mensaje" required></textarea><button>Enviar</button></form>
+<p id="ok"></p><h3>Registros (demo local)</h3><table id="t"><thead><tr><th>Fecha</th><th>Nombre</th><th>Tel</th><th>Mensaje</th></tr></thead><tbody></tbody></table>
+<button id="csv" style="background:#333">Exportar CSV (compatible Google Sheets)</button>
+<script>
+// Modo producción: pegar la URL del Web App de Apps Script (ver README). Vacío = modo demo (localStorage).
+const SCRIPT_URL = "";
+const K="leads_demo", rows=()=>JSON.parse(localStorage.getItem(K)||"[]");
+function render(){document.querySelector("#t tbody").innerHTML=rows().map(r=>`<tr><td>${r.fecha}</td><td>${r.nombre}</td><td>${r.telefono}</td><td>${r.mensaje}</td></tr>`).join("")}
+document.getElementById("f").onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));d.fecha=new Date().toISOString();
+ if(SCRIPT_URL){await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(d)})}
+ const r=rows();r.push(d);localStorage.setItem(K,JSON.stringify(r));e.target.reset();ok.textContent="¡Gracias! Te contactamos pronto.";render()};
+document.getElementById("csv").onclick=()=>{const q=s=>'"'+String(s).replace(/"/g,'""')+'"';const c="fecha,nombre,telefono,mensaje\n"+rows().map(r=>[r.fecha,r.nombre,r.telefono,r.mensaje].map(q).join(",")).join("\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:"text/csv"}));a.download="leads.csv";a.click()};
+render();
+</script></body></html>

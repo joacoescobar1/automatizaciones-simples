@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo – Turnos + recordatorios</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:720px;margin:32px auto;padding:0 16px;color:#1b1b1b;background:#f6f7fb}
+h1{font-size:1.35rem;margin:0 0 8px}
+.card{background:#fff;border-radius:14px;padding:18px;margin:14px 0;box-shadow:0 2px 10px #0001}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{border:1px solid #e5e7eb;padding:8px;text-align:left}
+th{background:#f3f4f6}
+.ok{color:#0f766e;font-weight:600}
+.pend{color:#b45309}
+.cancel{color:#9ca3af;text-decoration:line-through}
+button{background:#0f766e;color:#fff;border:0;padding:12px 16px;border-radius:10px;font-weight:700;cursor:pointer}
+.msg{margin-top:12px;padding:12px;background:#ecfdf5;border-radius:10px;display:none}
+a.back{color:#0f766e;text-decoration:none;font-size:14px}
+</style>
+</head>
+<body>
+<p><a class="back" href="../../index.html">← Volver al portfolio</a></p>
+<h1>Demo: turnos + recordatorio 24 h antes</h1>
+<p style="color:#555">Simulación local. En el entregable real esto vive en tu Google Sheet y manda el aviso solo.</p>
+
+<div class="card">
+<table>
+<thead>
+<tr><th>Cliente</th><th>Fecha</th><th>Hora</th><th>Servicio</th><th>Estado</th><th>Recordatorio</th></tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<div class="card">
+<button id="run">Simular envío de recordatorios</button>
+<div class="msg" id="msg"></div>
+<p style="font-size:13px;color:#666;margin-top:14px">Ideal para consultorios, peluquerías, estudios y talleres. Sin acceso a tu correo: la planilla es tuya.</p>
+</div>
+
+<script>
+const rows = [
+  {cliente:"Ana Ruiz", fecha:"2026-10-27", hora:"10:00", servicio:"Consulta", estado:"confirmado", rec:""},
+  {cliente:"Pedro Sosa", fecha:"2026-10-27", hora:"11:30", servicio:"Control", estado:"pendiente", rec:""},
+  {cliente:"Julieta Paz", fecha:"2026-10-28", hora:"16:00", servicio:"Limpieza", estado:"confirmado", rec:""},
+  {cliente:"Martín Díaz", fecha:"2026-10-29", hora:"09:00", servicio:"Consulta", estado:"cancelado", rec:""},
+];
+
+function cls(e){return e==="cancelado"?"cancel":e==="pendiente"?"pend":"ok"}
+
+function render(){
+  document.getElementById("tbody").innerHTML = rows.map(r =>
+    `<tr>
+      <td>${r.cliente}</td><td>${r.fecha}</td><td>${r.hora}</td><td>${r.servicio}</td>
+      <td class="${cls(r.estado)}">${r.estado}</td>
+      <td>${r.rec || "—"}</td>
+    </tr>`
+  ).join("");
+}
+
+document.getElementById("run").onclick = () => {
+  let n = 0;
+  rows.forEach(r => {
+    if (r.estado !== "cancelado" && !r.rec) {
+      r.rec = "enviado ✓";
+      n++;
+    }
+  });
+  render();
+  const msg = document.getElementById("msg");
+  msg.style.display = "block";
+  msg.textContent = n
+    ? `Listo: ${n} recordatorio(s) marcados como enviados (demo). En producción sale por mail/WhatsApp el día anterior.`
+    : "No había turnos pendientes de recordatorio.";
+};
+
+render();
+</script>
+</body>
+</html>
